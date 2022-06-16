@@ -46,6 +46,13 @@ function App() {
     setItemToAdd(event.target.value);
   };
 
+  const [itemToSearch, setItemToSearch] = useState("");
+
+  const handleSearchItem = (event) => {
+    // console.log(event.target.value);
+    setItemToSearch(event.target.value);
+  };
+
   const handleAddItem = () => {
     // mutating !WRONG!
     // const oldItems = items;
@@ -118,6 +125,7 @@ function App() {
           type="text"
           className="form-control search-input"
           placeholder="type to search"
+          onChange={handleSearchItem}
         />
         {/* Item-status-filter */}
         <div className="btn-group">
@@ -139,32 +147,42 @@ function App() {
       {/* List-group */}
       <ul className="list-group todo-list">
         {filteredItems.length > 0 &&
-          filteredItems.map((item) => (
-            <li key={item.key} className="list-group-item">
-              <span className={`todo-list-item${item.done ? " done" : ""}`}>
-                <span
-                  className="todo-list-item-label"
-                  onClick={() => handleItemDone(item)}
-                >
-                  {item.label}
+          filteredItems
+            .filter((item) => {
+              if (itemToSearch === "") {
+                return item;
+              } else if (
+                item.label.toLowerCase().includes(itemToSearch.toLowerCase())
+              ) {
+                return item;
+              }
+            })
+            .map((item) => (
+              <li key={item.key} className="list-group-item">
+                <span className={`todo-list-item${item.done ? " done" : ""}`}>
+                  <span
+                    className="todo-list-item-label"
+                    onClick={() => handleItemDone(item)}
+                  >
+                    {item.label}
+                  </span>
+
+                  <button
+                    type="button"
+                    className="btn btn-outline-success btn-sm float-right"
+                  >
+                    <i className="fa fa-exclamation" />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger btn-sm float-right"
+                  >
+                    <i className="fa fa-trash-o" />
+                  </button>
                 </span>
-
-                <button
-                  type="button"
-                  className="btn btn-outline-success btn-sm float-right"
-                >
-                  <i className="fa fa-exclamation" />
-                </button>
-
-                <button
-                  type="button"
-                  className="btn btn-outline-danger btn-sm float-right"
-                >
-                  <i className="fa fa-trash-o" />
-                </button>
-              </span>
-            </li>
-          ))}
+              </li>
+            ))}
       </ul>
 
       {/* Add form */}
