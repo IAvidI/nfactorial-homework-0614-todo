@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "./App.css";
 
@@ -38,7 +38,20 @@ const toDoItems = [
 function App() {
   const [itemToAdd, setItemToAdd] = useState("");
   //arrow declaration => expensive computation ex: API calls
-  const [items, setItems] = useState(() => toDoItems);
+  const [items, setItems] = useState(() => {
+    // toDoItems
+
+    const savedItems = localStorage.getItem("items");
+    // if there are todos stored
+    if (savedItems) {
+      // return the parsed JSON object back to a javascript object
+      return JSON.parse(savedItems);
+      // otherwise
+    } else {
+      // return an empty array
+      return toDoItems;
+    }
+  });
 
   const [filterType, setFilterType] = useState("");
 
@@ -116,6 +129,16 @@ function App() {
       : filterType === "active"
       ? items.filter((item) => !item.done)
       : items.filter((item) => item.done);
+
+  useEffect(() => {
+    // localstorage only support storing strings as keys and values
+    // - therefore we cannot store arrays and objects without converting the object
+    // into a string first. JSON.stringify will convert the object into a JSON string
+    // reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+    localStorage.setItem("items", JSON.stringify(items));
+    // add the todos as a dependancy because we want to update the
+    // localstorage anytime the todos state changes
+  }, [items]);
 
   return (
     <div className="todo-app">
