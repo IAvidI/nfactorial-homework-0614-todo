@@ -53,6 +53,14 @@ function App() {
     setItemToSearch(event.target.value);
   };
 
+  const handleDeleteItem = ({ key }) => {
+    // console.log(key);
+
+    const newItems = items.filter((item) => item.key !== key);
+
+    setItems(newItems);
+  };
+
   const handleAddItem = () => {
     // mutating !WRONG!
     // const oldItems = items;
@@ -177,6 +185,7 @@ function App() {
                   <button
                     type="button"
                     className="btn btn-outline-danger btn-sm float-right"
+                    onClick={() => handleDeleteItem(item)}
                   >
                     <i className="fa fa-trash-o" />
                   </button>
